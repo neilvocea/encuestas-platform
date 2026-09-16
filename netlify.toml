@@ -1,0 +1,11 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/postback/cpx"
+  to = "/.netlify/functions/cpx-postback"
+  status = 200
