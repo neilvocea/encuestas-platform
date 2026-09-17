@@ -69,17 +69,62 @@ button.secondary {
   max-width: 900px;
 }
 
-iframe#cpx-frame {
-  width: 100%;
-  height: 500px;
-  border: none;
-  border-radius: 12px;
-  margin-top: 16px;
-}
-
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
+
+/* Panel de tarjetas de proveedores */
+.providers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.provider-card {
+  background: #10131a;
+  border: 1px solid #2a2e3a;
+  border-radius: 14px;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.provider-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.provider-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.provider-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Vista de encuesta individual */
+#survey-view {
+  margin-top: 12px;
+}
+
+#back-btn {
+  margin-bottom: 12px;
+}
+
+iframe#survey-frame {
+  width: 100%;
+  height: 700px;
+  border: none;
+  border-radius: 12px;
 }
