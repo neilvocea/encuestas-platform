@@ -64,7 +64,7 @@ onAuthStateChanged(auth, async (user) => {
       ? snap.data().points ?? 0
       : 0;
     document.getElementById("cpx-frame").src =
-      `https://offers.cpx-research.com/index.php?app_id=TU_APP_ID&ext_user_id=${user.uid}`;
+      `https://offers.cpx-research.com/index.php?app_id=36281&ext_user_id=${user.uid}`;
   } else {
     authSection.classList.remove("hidden");
     appSection.classList.add("hidden");
