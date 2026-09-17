@@ -65,6 +65,8 @@ onAuthStateChanged(auth, async (user) => {
       : 0;
     document.getElementById("cpx-frame").src =
       `https://offers.cpx-research.com/index.php?app_id=36281&ext_user_id=${user.uid}`;
+    document.getElementById("theoremreach-frame").src =
+      `https://theoremreach.com/respondent_entry/direct?api_key=bf177bbe5bb261f308aed4e323d9&user_id=${user.uid}`;
   } else {
     authSection.classList.remove("hidden");
     appSection.classList.add("hidden");
