@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encuestas Premium</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <div id="auth-section" class="card">
+    <h1>Encuestas Premium</h1>
+
+    <form id="login-form">
+      <strong>Iniciar sesión</strong>
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Contraseña" required />
+      <button type="submit">Entrar</button>
+    </form>
+
+    <form id="register-form">
+      <strong>Crear cuenta</strong>
+      <input type="email" id="register-email" placeholder="Email" required />
+      <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required />
+      <button type="submit">Registrarme</button>
+    </form>
+  </div>
+
+  <div id="app-section" class="card app-wide hidden">
+    <div class="topbar">
+      <div>
+        <div id="user-email" class="muted"></div>
+        <div class="points"><span id="user-points">0</span> pts</div>
+      </div>
+      <button id="logout-btn" class="secondary">Cerrar sesión</button>
+    </div>
+
+    <p>Completá encuestas para ganar puntos canjeables:</p>
+    <iframe id="cpx-frame" title="Encuestas disponibles"></iframe>
+  </div>
+
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>
