@@ -35,13 +35,26 @@
       <button id="logout-btn" class="secondary">Cerrar sesión</button>
     </div>
 
-    <p>Completá encuestas para ganar puntos canjeables:</p>
+    <!-- Panel principal: tarjetas de proveedores -->
+    <div id="providers-view">
+      <p>Elegí un proveedor para ver sus encuestas disponibles:</p>
+      <div class="providers-grid">
+        <button class="provider-card" data-provider="cpx">
+          <span class="provider-name">CPX Research</span>
+          <span class="provider-sub">Encuestas variadas</span>
+        </button>
+        <button class="provider-card" data-provider="theoremreach">
+          <span class="provider-name">TheoremReach</span>
+          <span class="provider-sub">Encuestas variadas</span>
+        </button>
+      </div>
+    </div>
 
-    <h3>CPX Research</h3>
-    <iframe id="cpx-frame" title="Encuestas CPX"></iframe>
-
-    <h3>TheoremReach</h3>
-    <iframe id="theoremreach-frame" title="Encuestas TheoremReach"></iframe>
+    <!-- Vista de encuesta: se muestra al tocar una tarjeta -->
+    <div id="survey-view" class="hidden">
+      <button id="back-btn" class="secondary">&larr; Volver</button>
+      <iframe id="survey-frame" title="Encuestas"></iframe>
+    </div>
   </div>
 
   <script type="module" src="/js/auth.js"></script>
