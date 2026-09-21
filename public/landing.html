@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vocea: ganá puntos con encuestas y canjealos por tarjetas de regalo</title>
+  <meta name="description" content="Vocea es una plataforma de encuestas. Respondé encuestas de proveedores asociados, sumá puntos y canjealos por tarjetas de regalo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f2f6f7;
+      --surface: #ffffff;
+      --ink: #10222b;
+      --muted: #4b6069;
+      --line: #d3dee2;
+      --teal: #0b7a75;
+      --teal-dark: #085c58;
+      --signal: #f0a12b;
+      --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+      --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #0d1a20;
+        --surface: #142830;
+        --ink: #e9f1f3;
+        --muted: #9db2ba;
+        --line: #26414b;
+        --teal: #37b5ae;
+        --teal-dark: #5fd0c9;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+    }
+    a { color: var(--teal); }
+    a:focus-visible, .btn:focus-visible {
+      outline: 3px solid var(--signal);
+      outline-offset: 3px;
+    }
+    .wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.25rem; }
+
+    header { padding: 1.25rem 0; }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.4rem;
+      border-radius: 0.6rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: var(--teal);
+      color: #fff;
+      border: 2px solid var(--teal);
+    }
+    .btn:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+    .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .btn.ghost:hover { border-color: var(--teal); background: transparent; }
+
+    .hero { padding: 3rem 0 3.5rem; }
+    .hero .wrap { display: grid; gap: 2.5rem; align-items: center; }
+    @media (min-width: 52rem) { .hero .wrap { grid-template-columns: 1.15fr 0.85fr; } }
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2.3rem, 6vw, 3.9rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin: 0 0 1.25rem;
+    }
+    .lead { font-size: 1.2rem; color: var(--muted); max-width: 34rem; margin: 0 0 1.75rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .wave { display: flex; align-items: center; justify-content: center; gap: 0.5rem; height: 16rem; }
+    .wave span {
+      display: block;
+      width: 1rem;
+      border-radius: 1rem;
+      background: var(--teal);
+      animation: pulse 2.4s ease-in-out 1;
+      transform-origin: center;
+    }
+    .wave span:nth-child(1) { height: 30%; }
+    .wave span:nth-child(2) { height: 55%; }
+    .wave span:nth-child(3) { height: 85%; background: var(--signal); }
+    .wave span:nth-child(4) { height: 100%; }
+    .wave span:nth-child(5) { height: 70%; }
+    .wave span:nth-child(6) { height: 45%; }
+    .wave span:nth-child(7) { height: 25%; }
+    @keyframes pulse {
+      0% { transform: scaleY(0.2); }
+      100% { transform: scaleY(1); }
+    }
+    @media (prefers-reduced-motion: reduce) { .wave span { animation: none; } }
+
+    section { padding: 3rem 0; border-top: 1px solid var(--line); }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin: 0 0 1.75rem;
+    }
+    .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; counter-reset: paso; }
+    @media (min-width: 52rem) { .steps { grid-template-columns: repeat(4, 1fr); } }
+    .steps li {
+      counter-increment: paso;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+    }
+    .steps li::before {
+      content: counter(paso);
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--teal);
+      margin-bottom: 0.6rem;
+    }
+    .steps strong { display: block; margin-bottom: 0.25rem; }
+    .steps p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+
+    .two { display: grid; gap: 2rem; }
+    @media (min-width: 52rem) { .two { grid-template-columns: 1fr 1fr; } }
+    .two p { margin: 0 0 1rem; max-width: 34rem; }
+    .two ul { margin: 0; padding-left: 1.2rem; max-width: 34rem; }
+    .two li { margin-bottom: 0.5rem; }
+
+    .final { text-align: left; }
+    footer { padding: 2rem 0 3rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
+    footer nav { display: flex; gap: 1.25rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <a class="brand" href="landing.html">Vocea</a>
+      <a class="btn ghost" href="/">Iniciar sesión</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="wrap">
+        <div>
+          <h1>Tu opinión suma puntos.</h1>
+          <p class="lead">Vocea es una plataforma de encuestas. Respondés encuestas de proveedores asociados, sumás puntos y los canjeás por tarjetas de regalo.</p>
+          <div class="actions">
+            <a class="btn" href="/">Crear cuenta o iniciar sesión</a>
+            <a class="btn ghost" href="#como-funciona">Ver cómo funciona</a>
+          </div>
+        </div>
+        <div class="wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <section id="como-funciona">
+      <div class="wrap">
+        <h2>Cómo funciona</h2>
+        <ol class="steps">
+          <li>
+            <strong>Creá tu cuenta</strong>
+            <p>Te registrás con tu email y una contraseña.</p>
+          </li>
+          <li>
+            <strong>Elegí una encuesta</strong>
+            <p>En tu panel ves las encuestas disponibles, organizadas por proveedor.</p>
+          </li>
+          <li>
+            <strong>Sumá puntos</strong>
+            <p>Al completar una encuesta, los puntos se acreditan en tu cuenta.</p>
+          </li>
+          <li>
+            <strong>Canjeá tu recompensa</strong>
+            <p>Cuando llegás al mínimo, pedís una tarjeta de regalo.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap two">
+        <div>
+          <h2>Encuestas de proveedores asociados</h2>
+          <p>Vocea no crea las encuestas. Las ofrecen empresas especializadas en investigación de mercado, y cada una se abre dentro de tu panel para que no tengas que salir de la plataforma.</p>
+          <p>La disponibilidad depende de tu perfil y de tu país en cada momento. Si una encuesta no está disponible, es normal: volvé a probar más tarde.</p>
+        </div>
+        <div>
+          <h2>Canjes revisados una por una</h2>
+          <ul>
+            <li>Cada pedido de canje lo revisamos manualmente antes de aprobarlo.</li>
+            <li>Detectamos cuentas duplicadas y actividad sospechosa en las encuestas.</li>
+            <li>Las cuentas involucradas en fraude se eliminan.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="final">
+      <div class="wrap">
+        <h2>Empezá cuando quieras</h2>
+        <p class="lead">Las encuestas están dentro de tu cuenta. Entrá o registrate para verlas.</p>
+        <a class="btn" href="/">Ir a Vocea</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© Vocea</span>
+      <nav aria-label="Información legal">
+        <a href="terminos.html">Términos y condiciones</a>
+        <a href="privacidad.html">Política de privacidad</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
