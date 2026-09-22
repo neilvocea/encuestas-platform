@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Encuestas Premium</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    .survey-list { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+    .survey-card {
+      border: 1px solid rgba(128, 128, 128, 0.35);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+    }
+    .survey-card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+    .survey-row { display: flex; justify-content: space-between; gap: 1rem; margin: 0.2rem 0; }
+    .survey-card button { margin-top: 0.6rem; width: 100%; }
+    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .external-link { display: inline-block; margin: 0.5rem 0; font-size: 0.9rem; }
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      transform: translateX(-50%);
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      background: #1f8f4e;
+      color: #fff;
+      font-weight: 600;
+      z-index: 50;
+    }
+  </style>
 </head>
 <body>
 
@@ -50,12 +75,26 @@
       </div>
     </div>
 
-    <!-- Vista de encuesta: se muestra al tocar una tarjeta -->
+    <!-- Lista de encuestas de CPX, con el diseño de Vocea -->
+    <div id="cpx-list-view" class="hidden">
+      <div class="toolbar">
+        <button id="cpx-back-btn" class="secondary">&larr; Proveedores</button>
+        <button id="cpx-refresh-btn" class="secondary">Actualizar</button>
+      </div>
+      <h2>Encuestas disponibles</h2>
+      <p id="cpx-status" class="muted"></p>
+      <div id="cpx-list" class="survey-list"></div>
+    </div>
+
+    <!-- Vista de encuesta: se muestra al abrir una encuesta -->
     <div id="survey-view" class="hidden">
       <button id="back-btn" class="secondary">&larr; Volver</button>
+      <a id="open-external" class="external-link" href="#" target="_blank" rel="noopener">¿No carga? Abrir en pestaña nueva</a>
       <iframe id="survey-frame" title="Encuestas"></iframe>
     </div>
   </div>
+
+  <div id="toast" class="hidden" role="status"></div>
 
   <script type="module" src="/js/auth.js"></script>
 </body>
