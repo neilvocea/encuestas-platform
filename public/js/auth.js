@@ -35,7 +35,7 @@ const cpxBackBtn = document.getElementById("cpx-back-btn");
 const cpxRefreshBtn = document.getElementById("cpx-refresh-btn");
 
 const surveyView = document.getElementById("survey-view");
-const surveyFrame = document.getElementById("survey-frame");
+const surveyWaiting = document.getElementById("survey-waiting");
 const openExternal = document.getElementById("open-external");
 const backBtn = document.getElementById("back-btn");
 const toast = document.getElementById("toast");
@@ -43,6 +43,7 @@ const toast = document.getElementById("toast");
 let currentUserId = null;
 let unsubscribePoints = null;
 let pointsBeforeSurvey = null;
+let surveyWindow = null; // referencia a la pestaña de la encuesta, para poder cerrarla sola
 
 // ---------- Vistas ----------
 function showView(view) {
@@ -101,18 +102,19 @@ async function loadCpxSurveys() {
   }
 }
 
-// ---------- Abrir una encuesta y volver solo a Vocea ----------
+// ---------- Abrir una encuesta en pestaña nueva y volver solo a Vocea ----------
+// Algunos proveedores (TimeSurveys dentro de TimeWall, por ejemplo) rompen el
+// iframe y se apoderan de toda la pantalla. Por eso abrimos la encuesta en una
+// PESTAÑA NUEVA: la pestaña de Vocea queda viva de fondo, esperando. Apenas el
+// postback suma los puntos, Vocea cierra sola esa pestaña nueva.
 function openSurvey(url) {
   pointsBeforeSurvey = Number(userPointsLabel.textContent) || 0;
-  surveyFrame.src = url;
   openExternal.href = url;
+  surveyWindow = window.open(url, "_blank");
   showView(surveyView);
   watchForPointsChange();
 }
 
-// Como CPX/TheoremReach no siempre pueden redirigir de vuelta a Vocea,
-// detectamos que la encuesta terminó cuando cambian los puntos del usuario
-// (el postback ya corrió) y volvemos solos a la pantalla anterior.
 function watchForPointsChange() {
   if (unsubscribePoints) unsubscribePoints();
   unsubscribePoints = onSnapshot(doc(db, "users", currentUserId), (snap) => {
@@ -121,11 +123,19 @@ function watchForPointsChange() {
     if (pointsBeforeSurvey !== null && points !== pointsBeforeSurvey && !surveyView.classList.contains("hidden")) {
       const gained = points - pointsBeforeSurvey;
       pointsBeforeSurvey = null;
-      surveyFrame.src = "";
+      closeSurveyWindow();
       showToast(gained > 0 ? `¡Ganaste ${gained} pts!` : "La encuesta no se acreditó esta vez.");
       returnToVocea();
     }
   });
+}
+
+function closeSurveyWindow() {
+  // Solo podemos cerrar la pestaña que nosotros mismos abrimos con window.open.
+  if (surveyWindow && !surveyWindow.closed) {
+    surveyWindow.close();
+  }
+  surveyWindow = null;
 }
 
 function returnToVocea() {
@@ -162,7 +172,7 @@ cpxRefreshBtn?.addEventListener("click", loadCpxSurveys);
 // Botón "Volver" manual (por si el usuario no quiere esperar el cambio de puntos)
 backBtn?.addEventListener("click", () => {
   if (unsubscribePoints) unsubscribePoints();
-  surveyFrame.src = "";
+  closeSurveyWindow();
   pointsBeforeSurvey = null;
   returnToVocea();
 });
