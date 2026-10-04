@@ -148,6 +148,11 @@ document.querySelectorAll(".provider-card").forEach((card) => {
       const url = `https://theoremreach.com/respondent_entry/direct?api_key=bf177bbe5bb261f308aed4e323d9&user_id=${currentUserId}`;
       openSurvey(url);
     }
+
+    if (provider === "timewall") {
+      const url = `https://timewall.io/users/login?oid=cd51d14390ace069&uid=${currentUserId}`;
+      openSurvey(url);
+    }
   });
 });
 
