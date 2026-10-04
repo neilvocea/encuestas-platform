@@ -17,6 +17,20 @@
     .survey-card button { margin-top: 0.6rem; width: 100%; }
     .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
     .external-link { display: inline-block; margin: 0.5rem 0; font-size: 0.9rem; }
+    #survey-waiting {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    #survey-waiting .spinner {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin: 0 auto 1rem;
+      border: 3px solid rgba(128,128,128,0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     #toast {
       position: fixed;
       left: 50%;
@@ -90,11 +104,15 @@
       <div id="cpx-list" class="survey-list"></div>
     </div>
 
-    <!-- Vista de encuesta: se muestra al abrir una encuesta -->
+    <!-- Vista de espera: la encuesta se abrió en una pestaña nueva; acá esperamos a que termine -->
     <div id="survey-view" class="hidden">
       <button id="back-btn" class="secondary">&larr; Volver</button>
-      <a id="open-external" class="external-link" href="#" target="_blank" rel="noopener">¿No carga? Abrir en pestaña nueva</a>
-      <iframe id="survey-frame" title="Encuestas"></iframe>
+      <div id="survey-waiting">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Tu encuesta se abrió en una pestaña nueva.</p>
+        <p class="muted">Cuando la completes, vas a volver acá automáticamente.</p>
+        <p><a id="open-external" class="external-link" href="#" target="_blank" rel="noopener">¿No se abrió? Tocá acá para abrirla de nuevo</a></p>
+      </div>
     </div>
   </div>
 
