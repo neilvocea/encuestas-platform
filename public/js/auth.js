@@ -105,16 +105,27 @@ async function loadCpxSurveys() {
 // ---------- Abrir una encuesta en pestaña nueva y volver solo a Vocea ----------
 // Algunos proveedores (TimeSurveys dentro de TimeWall, por ejemplo) rompen el
 // iframe y se apoderan de toda la pantalla. Por eso abrimos la encuesta en una
-// PESTAÑA NUEVA: la pestaña de Vocea queda viva de fondo, esperando. Apenas el
-// postback suma los puntos, Vocea cierra sola esa pestaña nueva.
+// PESTAÑA NUEVA: la pestaña de Vocea queda viva de fondo, esperando.
+//
+// IMPORTANTE: ni CPX ni TheoremReach ni TimeWall avisan de forma confiable
+// cuando un usuario es DESCALIFICADO (solo avisan cuando hay pago de por
+// medio). Por eso NO podemos depender solo del postback para saber que la
+// encuesta terminó. En cambio, detectamos que el usuario volvió a mirar la
+// pestaña de Vocea (la tocó o le volvió el foco) y ahí damos la encuesta por
+// terminada, haya sumado puntos o no.
+let surveyPollId = null;
+
 function openSurvey(url) {
   pointsBeforeSurvey = Number(userPointsLabel.textContent) || 0;
   openExternal.href = url;
   surveyWindow = window.open(url, "_blank");
   showView(surveyView);
   watchForPointsChange();
+  watchForUserReturn();
 }
 
+// Vía 1 (la "buena noticia" si llega a tiempo): si el postback suma puntos
+// mientras seguimos esperando, mostramos cuánto ganó.
 function watchForPointsChange() {
   if (unsubscribePoints) unsubscribePoints();
   unsubscribePoints = onSnapshot(doc(db, "users", currentUserId), (snap) => {
@@ -122,12 +133,56 @@ function watchForPointsChange() {
     userPointsLabel.textContent = points;
     if (pointsBeforeSurvey !== null && points !== pointsBeforeSurvey && !surveyView.classList.contains("hidden")) {
       const gained = points - pointsBeforeSurvey;
-      pointsBeforeSurvey = null;
-      closeSurveyWindow();
-      showToast(gained > 0 ? `¡Ganaste ${gained} pts!` : "La encuesta no se acreditó esta vez.");
-      returnToVocea();
+      finishSurvey(gained > 0 ? `¡Ganaste ${gained} pts!` : null);
     }
   });
+}
+
+// Vía 2 (la que SIEMPRE funciona, incluso con descalificaciones): en cuanto
+// el usuario vuelve a esta pestaña, o la pestaña que abrimos se cerró sola,
+// damos la encuesta por terminada.
+function watchForUserReturn() {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("focus", handleWindowFocus);
+  // Respaldo: si el usuario cierra la pestaña de la encuesta en vez de volver
+  // a esta, lo detectamos igual revisando cada segundo.
+  surveyPollId = setInterval(() => {
+    if (surveyWindow && surveyWindow.closed) {
+      finishSurvey(null);
+    }
+  }, 1000);
+}
+
+function handleVisibilityChange() {
+  if (document.visibilityState === "visible" && !surveyView.classList.contains("hidden")) {
+    finishSurvey(null);
+  }
+}
+
+function handleWindowFocus() {
+  if (!surveyView.classList.contains("hidden")) {
+    finishSurvey(null);
+  }
+}
+
+// Se llama una sola vez, venga por donde venga (puntos, cierre de pestaña o
+// regreso del usuario). Limpia todo y vuelve a la pantalla de proveedores.
+function finishSurvey(successMessage) {
+  if (surveyView.classList.contains("hidden")) return; // ya se procesó
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+  window.removeEventListener("focus", handleWindowFocus);
+  if (surveyPollId) {
+    clearInterval(surveyPollId);
+    surveyPollId = null;
+  }
+  if (unsubscribePoints) {
+    unsubscribePoints();
+    unsubscribePoints = null;
+  }
+  pointsBeforeSurvey = null;
+  closeSurveyWindow();
+  showToast(successMessage || "De vuelta en Vocea.");
+  returnToVocea();
 }
 
 function closeSurveyWindow() {
@@ -169,13 +224,8 @@ document.querySelectorAll(".provider-card").forEach((card) => {
 cpxBackBtn?.addEventListener("click", () => showView(providersView));
 cpxRefreshBtn?.addEventListener("click", loadCpxSurveys);
 
-// Botón "Volver" manual (por si el usuario no quiere esperar el cambio de puntos)
-backBtn?.addEventListener("click", () => {
-  if (unsubscribePoints) unsubscribePoints();
-  closeSurveyWindow();
-  pointsBeforeSurvey = null;
-  returnToVocea();
-});
+// Botón "Volver" manual (por si el usuario quiere volver ya mismo)
+backBtn?.addEventListener("click", () => finishSurvey(null));
 
 // ---------- Auth ----------
 registerForm?.addEventListener("submit", async (e) => {
