@@ -218,6 +218,12 @@ document.querySelectorAll(".provider-card").forEach((card) => {
       const url = `https://timewall.io/users/login?oid=cd51d14390ace069&uid=${currentUserId}`;
       openSurvey(url);
     }
+
+    if (provider === "surveoo") {
+      // Link de Daisycon: si = campaña Surveoo Panamá, wi = tu medio, ws = uid del usuario
+      const url = `https://jf79.net/c/?si=18175&li=1786847&wi=431759&ws=${currentUserId}`;
+      openSurvey(url);
+    }
   });
 });
 
